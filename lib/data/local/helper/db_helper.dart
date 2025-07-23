@@ -95,13 +95,13 @@ class DBHelper {
   Future<int> loginUser({required String email, required String pass}) async {
     var db = await initDB();
 
-    List<Map<String, dynamic>> allData = await db.query(
+    List<Map<String, dynamic>> allUsers = await db.query(
       TABLE_USER,
       where: "$COLUMN_USER_EMAIL = ?",
       whereArgs: [email],
     );
 
-    if(allData.isNotEmpty){
+    if(allUsers.isNotEmpty){
 
       List<Map<String, dynamic>> allData = await db.query(
         TABLE_USER,
