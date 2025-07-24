@@ -197,6 +197,11 @@ class _SignUpPageState extends State<SignUpPage> {
                     onPressed: () {
                       // Add your sign up logic here
 
+                      if(nameController.text.isEmpty || emailController.text.isEmpty || passwordController.text.isEmpty || mobNoController.text.isEmpty || genderController.text.isEmpty){
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please fill all the fields"), backgroundColor: Colors.red,));
+                        return;
+                      }
+
                       UserModel user = UserModel(
                           name: nameController.text,
                           email: emailController.text.trim(),

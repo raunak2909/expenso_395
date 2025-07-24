@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:expenso_395/app_constants.dart';
 import 'package:expenso_395/data/local/model/user_model.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../model/expense_model.dart';
@@ -110,6 +112,8 @@ class DBHelper {
       );
 
       if(allData.isNotEmpty){
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString(AppConstants.prefUserIdKey, allData[0][COLUMN_USER_ID].toString());
         return 1; // user authenticated
       } else {
         return 3; // incorrect password

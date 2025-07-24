@@ -1,3 +1,4 @@
+import 'package:expenso_395/ui/home/home_page.dart';
 import 'package:expenso_395/ui/login/login_page.dart';
 import 'package:expenso_395/ui/signup/sign_up_page.dart';
 import 'package:expenso_395/ui/splash/splash_screen.dart';
@@ -15,6 +16,7 @@ class AppRoutes{
     splash: (context) => SplashPage(),
     login: (context) => LoginPage(),
     register: (context) => SignUpPage(),
+    home: (context) => HomePage(),
   };
 
 }

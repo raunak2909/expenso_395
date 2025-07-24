@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:expenso_395/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../utils/app_routes.dart';
 import '../signup/sign_up_page.dart';
@@ -16,8 +18,19 @@ class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration (seconds: 3), (){
-      Navigator.pushReplacementNamed(context, AppRoutes.login);
+    Timer(Duration (seconds: 3), () async{
+
+      String nextPageName = AppRoutes.login;
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userId = prefs.getString(AppConstants.prefUserIdKey) ?? "";
+
+      if(userId.isNotEmpty){
+        nextPageName = AppRoutes.home;
+      }
+
+
+      Navigator.pushReplacementNamed(context, nextPageName);
     });
   }
 
