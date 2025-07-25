@@ -146,7 +146,7 @@ class _LoginPageState extends State<LoginPage> {
                         backgroundColor: Colors.green,
                       ),
                     );
-                    Navigator.pushReplacementNamed(context, AppRoutes.home);
+                    Navigator.pushReplacementNamed(context, AppRoutes.dashboard);
                   }
 
                   if(state is UserFailureState){
