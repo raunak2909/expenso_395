@@ -9,10 +9,12 @@ class UIHelper {
     return InputDecoration(
       border: OutlineInputBorder(),
       focusedBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.pinkAccent),
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: Colors.pinkAccent, width: 2),
       ),
       enabledBorder: OutlineInputBorder(
-        borderSide: BorderSide(color: Colors.purple),
+        borderRadius: BorderRadius.circular(10),
+        borderSide: BorderSide(color: Colors.purple, width: 2),
       ),
       labelText: labelTxt,
       hintText: hintTxt,
