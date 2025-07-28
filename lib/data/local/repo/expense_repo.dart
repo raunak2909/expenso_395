@@ -6,12 +6,12 @@ class ExpenseRepository{
   DBHelper dbHelper;
   ExpenseRepository({required this.dbHelper});
 
-  addExpense({required ExpenseModel expense}){
-
+  Future<bool> addExpense({required ExpenseModel expense}) async{
+    return await dbHelper.addExpense(expense: expense);
   }
 
-  /*List<ExpenseModel>*/ fetchAllExpenses(){
-
+  Future<List<ExpenseModel>> fetchAllExpenses() async{
+    return await dbHelper.fetchAllExpenses();
   }
 
   ///update

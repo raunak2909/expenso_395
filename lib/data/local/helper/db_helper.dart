@@ -145,9 +145,30 @@ class DBHelper {
   }
 
   ///expense
-  void addExpense({required ExpenseModel expense}) {}
+  Future<bool> addExpense({required ExpenseModel expense}) async{
 
-  void fetchAllExpenses() {}
+    var db = await initDB();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int userId = int.parse(prefs.getString(AppConstants.prefUserIdKey) ?? "0");
+    expense.uid = userId;
+    int rowsEffected = await db.insert(TABLE_EXPENSE, expense.toMap());
+    return rowsEffected > 0;
+
+  }
+
+  Future<List<ExpenseModel>> fetchAllExpenses() async{
+    var db = await initDB();
+
+    List<Map<String, dynamic>> allData = await db.query(TABLE_EXPENSE);
+
+    List<ExpenseModel> allExp = [];
+
+    for(Map<String, dynamic> eachExp in allData){
+      allExp.add(ExpenseModel.fromMap(eachExp));
+    }
+
+    return allExp;
+  }
 
   void updateExpense({required ExpenseModel expense}) {}
 
