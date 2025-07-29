@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:expenso_395/app_constants.dart';
 import 'package:expenso_395/data/local/model/expense_model.dart';
+import 'package:expenso_395/data/local/model/filter_expense_model.dart';
 import 'package:expenso_395/ui/dashboard/nav_pages/bloc/expense_bloc.dart';
 import 'package:expenso_395/ui/dashboard/nav_pages/bloc/expense_event.dart';
 import 'package:expenso_395/ui/dashboard/nav_pages/bloc/expense_state.dart';
@@ -115,10 +116,7 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               trailing: Container(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: 5,
-                ),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
                   color: Colors.blueAccent.withOpacity(.2),
@@ -402,62 +400,139 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
             ),*/
-            Expanded(child: BlocBuilder<ExpenseBloc, ExpenseState>(builder: (_, state) {
+            Expanded(
+              child: BlocBuilder<ExpenseBloc, ExpenseState>(
+                builder: (_, state) {
+                  if (state is ExpenseLoadingState) {
+                    return Center(child: CircularProgressIndicator());
+                  }
 
-              if(state is ExpenseLoadingState){
-                return Center(child: CircularProgressIndicator(),);
-              }
+                  if (state is ExpenseErrorState) {
+                    return Center(child: Text(state.errorMsg));
+                  }
 
-              if(state is ExpenseErrorState){
-                return Center(child: Text(state.errorMsg),);
-              }
+                  if (state is ExpenseLoadedState) {
+                    return state.allExp.isNotEmpty
+                        ? ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemCount: state.allExp.length,
+                            itemBuilder: (_, index) {
+                              FilteredExpenseModel eachFilterExp =
+                                  state.allExp[index];
 
-              if(state is ExpenseLoadedState){
-                return state.allExp.isNotEmpty ? ListView.builder(
-                  itemCount: state.allExp.length,
-                    itemBuilder: (_, index){
-                  ExpenseModel expense = state.allExp[index];
+                              return Container(
+                                padding: EdgeInsets.all(14),
+                                margin: EdgeInsets.only(bottom: 11),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                    color: Colors.black12,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          eachFilterExp.title,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          "\$${eachFilterExp.totalAmt}",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Divider(
+                                      color: Colors.black12,
+                                      thickness: 2,
+                                    ),
+                                    ListView.builder(
+                                      padding: EdgeInsets.zero,
+                                      shrinkWrap: true,
+                                      physics: NeverScrollableScrollPhysics(),
+                                      itemCount: eachFilterExp.expList.length,
+                                      itemBuilder: (_, childIndex) {
+                                        ExpenseModel expense =
+                                            eachFilterExp.expList[childIndex];
 
-                  String imgPath = AppConstants.mCategories.firstWhere((eachCat){
-                    return eachCat.id == expense.categoryId;
-                  }).imgPath;
+                                        String imgPath = AppConstants
+                                            .mCategories
+                                            .firstWhere((eachCat) {
+                                              return eachCat.id ==
+                                                  expense.categoryId;
+                                            })
+                                            .imgPath;
 
-                  return ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Container(
-                      height: 60,
-                      width: 60,
-                      decoration: BoxDecoration(
-                          color: Colors.primaries[Random().nextInt(Colors.primaries.length)].shade200,
-                          borderRadius: BorderRadius.circular(10)
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.asset(imgPath,),
-                      ),
-                    ),
-                    title: Text(expense.title,  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.normal,
-                      color: Colors.black,
-                    ),),
-                    subtitle: Text(expense.desc,  style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey,
-                    ),),
-                    trailing: Text("-\$${expense.amount}",  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.redAccent,
-                    ),),
-                  );
-                }) : Center(child: Text("No Expenses Yet!!"),);
-              }
+                                        return ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: Container(
+                                            height: 50,
+                                            width: 50,
+                                            decoration: BoxDecoration(
+                                              color: Colors
+                                                  .primaries[Random().nextInt(
+                                                    Colors.primaries.length,
+                                                  )]
+                                                  .shade200,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(
+                                                8.0,
+                                              ),
+                                              child: Image.asset(imgPath),
+                                            ),
+                                          ),
+                                          title: Text(
+                                            expense.title,
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.normal,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          subtitle: Text(
+                                            expense.desc,
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                          trailing: Text(
+                                            "-\$${expense.amount}",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.redAccent,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          )
+                        : Center(child: Text("No Expenses Yet!!"));
+                  }
 
-              return Container();
-
-            })),
+                  return Container();
+                },
+              ),
+            ),
           ],
         ),
       ),

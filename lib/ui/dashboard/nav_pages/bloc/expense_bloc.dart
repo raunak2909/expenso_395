@@ -1,3 +1,4 @@
+import 'package:expenso_395/data/local/model/filter_expense_model.dart';
 import 'package:expenso_395/data/local/repo/expense_repo.dart';
 import 'package:expenso_395/ui/dashboard/nav_pages/bloc/expense_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,7 +17,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState>{
       bool check = await expenseRepository.addExpense(expense: event.newExp);
       
       if(check){
-        List<ExpenseModel> allExp = await expenseRepository.fetchAllExpenses();
+        List<FilteredExpenseModel> allExp = await expenseRepository.fetchAllExpenses();
         emit(ExpenseLoadedState(allExp: allExp));
       } else {
         emit(ExpenseErrorState(errorMsg: "Something went wrong"));
@@ -27,7 +28,7 @@ class ExpenseBloc extends Bloc<ExpenseEvent, ExpenseState>{
     on<FetchAllExpenseEvent>((event, emit) async{
       emit(ExpenseLoadingState());
       
-      List<ExpenseModel> allExp = await expenseRepository.fetchAllExpenses();
+      List<FilteredExpenseModel> allExp = await expenseRepository.fetchAllExpenses();
       
       emit(ExpenseLoadedState(allExp: allExp));
     });
