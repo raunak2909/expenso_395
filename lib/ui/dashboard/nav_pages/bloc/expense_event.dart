@@ -4,7 +4,11 @@ abstract class ExpenseEvent{}
 
 class AddExpenseEvent extends ExpenseEvent{
   ExpenseModel newExp;
-  AddExpenseEvent({required this.newExp});
+  int filterType;
+  AddExpenseEvent({required this.newExp, this.filterType=1});
 }
 
-class FetchAllExpenseEvent extends ExpenseEvent{}
+class FetchAllExpenseEvent extends ExpenseEvent{
+  int filterType;
+  FetchAllExpenseEvent({this.filterType=1});
+}

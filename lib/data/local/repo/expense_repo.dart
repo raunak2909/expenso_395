@@ -13,15 +13,30 @@ class ExpenseRepository {
     return await dbHelper.addExpense(expense: expense);
   }
 
-  Future<List<FilteredExpenseModel>> fetchAllExpenses() async {
+  Future<List<FilteredExpenseModel>> fetchAllExpenses({int filterType = 1}) async {
     List<ExpenseModel> allExp = await dbHelper.fetchAllExpenses();
-    return filterExpenses(allExp: allExp);
+    return filterExpenses(allExp: allExp, filterType: filterType);
   }
 
   List<FilteredExpenseModel> filterExpenses({
-    required List<ExpenseModel> allExp,
+    required List<ExpenseModel> allExp, int filterType = 1
   }) {
+    ///1-> date
+    ///2-> month
+    ///3-> year
+    ///4-> category
+
     DateFormat df = DateFormat.yMMMEd();
+
+    if(filterType==1){
+      df = DateFormat.yMMMEd();
+    } else if(filterType==2){
+      df = DateFormat.yMMMM();
+    } else if(filterType==3){
+      df = DateFormat.y();
+    }
+
+
     List<FilteredExpenseModel> mFilteredExp = [];
 
     ///filtering

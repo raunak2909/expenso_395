@@ -17,6 +17,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<String> mFilter  = ["DateWise", "MonthWise", "YearWise"];
+  String selectedFilter = "DateWise";
   final List<Map<String, dynamic>> expenses = [
     {
       'icon': Icons.phone,
@@ -116,29 +118,36 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
               trailing: Container(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 5),
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 11),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6),
                   color: Colors.blueAccent.withOpacity(.2),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Text(
-                      "This month",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontFamily: "Regular",
-                        color: Colors.black,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    Icon(
-                      Icons.keyboard_arrow_down_outlined,
-                      color: Colors.black,
-                    ),
-                  ],
-                ),
+                child: StatefulBuilder(
+                    builder: (context, ss) {
+                      return DropdownButton(
+                        underline: Container(),
+                          value: selectedFilter,
+                          items: mFilter.map((e){
+                            return DropdownMenuItem(value: e,child: Text(e),);
+                          }).toList(), onChanged: (value){
+                        selectedFilter = value ?? "DateWise";
+                        int filterTypeValue = 1;
+
+                        if(selectedFilter=="DateWise"){
+                          filterTypeValue = 1;
+                        } else if(selectedFilter=="MonthWise"){
+                          filterTypeValue = 2;
+                        } else if(selectedFilter=="YearWise"){
+                          filterTypeValue = 3;
+                        }
+
+                        context.read<ExpenseBloc>().add(FetchAllExpenseEvent(filterType: filterTypeValue));
+
+                        ss((){});
+                      });
+                    }
+                )
               ),
             ),
             SizedBox(height: 20),
