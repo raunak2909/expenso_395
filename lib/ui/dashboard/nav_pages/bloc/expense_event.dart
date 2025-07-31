@@ -10,5 +10,6 @@ class AddExpenseEvent extends ExpenseEvent{
 
 class FetchAllExpenseEvent extends ExpenseEvent{
   int filterType;
-  FetchAllExpenseEvent({this.filterType=1});
+  int? expType;
+  FetchAllExpenseEvent({this.filterType=1, this.expType});
 }

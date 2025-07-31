@@ -17,8 +17,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> mFilter  = ["DateWise", "MonthWise", "YearWise"];
+  List<String> mFilter  = ["DateWise", "MonthWise", "YearWise", "CategoryWise"];
+  List<String> options = ["All","Expense","Income"];
+  int selectedOptionIndex = 0;
   String selectedFilter = "DateWise";
+  bool onlyIncome = false;
+  int filterTypeValue = 1;
   final List<Map<String, dynamic>> expenses = [
     {
       'icon': Icons.phone,
@@ -132,7 +136,7 @@ class _HomePageState extends State<HomePage> {
                             return DropdownMenuItem(value: e,child: Text(e),);
                           }).toList(), onChanged: (value){
                         selectedFilter = value ?? "DateWise";
-                        int filterTypeValue = 1;
+
 
                         if(selectedFilter=="DateWise"){
                           filterTypeValue = 1;
@@ -140,6 +144,8 @@ class _HomePageState extends State<HomePage> {
                           filterTypeValue = 2;
                         } else if(selectedFilter=="YearWise"){
                           filterTypeValue = 3;
+                        } else {
+                          filterTypeValue = 4;
                         }
 
                         context.read<ExpenseBloc>().add(FetchAllExpenseEvent(filterType: filterTypeValue));
@@ -243,14 +249,47 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             SizedBox(height: 20),
-            Text(
-              "Expense List",
-              style: TextStyle(
-                fontSize: 22,
-                color: Colors.black,
-                fontFamily: "Regular",
-                fontWeight: FontWeight.w900,
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "Expense List",
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.black,
+                    fontFamily: "Regular",
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                /*Switch(value: onlyIncome, onChanged: (value){
+                  onlyIncome = value;
+                  context.read<ExpenseBloc>().add(FetchAllExpenseEvent(filterType: filterTypeValue,expType: onlyIncome ? 2 : 1));
+                  setState(() {});
+                })*/
+                InkWell(
+                  onTap: (){
+                    if(selectedOptionIndex<options.length-1) {
+                      selectedOptionIndex++;
+                    } else {
+                      selectedOptionIndex = 0;
+                    }
+                    int? expType;
+                    if(selectedOptionIndex==1) {
+                     expType = 1;
+                    } else if(selectedOptionIndex==2){
+                      expType = 2;
+                    }
+
+                    context.read<ExpenseBloc>().add(FetchAllExpenseEvent(
+                        filterType: filterTypeValue,
+                        expType: expType));
+                    setState(() {
+
+                    });
+
+                  },
+                    child: Text(options[selectedOptionIndex], style: TextStyle(fontSize: 16),))
+              ],
             ),
             SizedBox(height: 10),
 
@@ -520,11 +559,11 @@ class _HomePageState extends State<HomePage> {
                                             ),
                                           ),
                                           trailing: Text(
-                                            "-\$${expense.amount}",
+                                            "${expense.expenseType==1?"-":"+"}\$${expense.amount}",
                                             style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.redAccent,
+                                              color: expense.expenseType==1?Colors.redAccent:Colors.green,
                                             ),
                                           ),
                                         );

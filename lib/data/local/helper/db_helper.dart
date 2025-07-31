@@ -156,10 +156,11 @@ class DBHelper {
 
   }
 
-  Future<List<ExpenseModel>> fetchAllExpenses() async{
+  Future<List<ExpenseModel>> fetchAllExpenses({int? type}) async{
+    print(type);
     var db = await initDB();
 
-    List<Map<String, dynamic>> allData = await db.query(TABLE_EXPENSE);
+    List<Map<String, dynamic>> allData =  type!=null ? await db.query(TABLE_EXPENSE, where: "$COLUMN_EXPENSE_TYPE = ?", whereArgs: ["$type"]) : await db.query(TABLE_EXPENSE);
 
     List<ExpenseModel> allExp = [];
 

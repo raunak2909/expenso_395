@@ -195,6 +195,9 @@ class AddExpensePage extends StatelessWidget {
                   ),
                 ),
                 initialSelection: selectedExpType,
+                onSelected: (value){
+                  selectedExpType = value!;
+                },
                 dropdownMenuEntries: expType.map((e) {
                   return DropdownMenuEntry(value: e, label: e);
                 }).toList()),
